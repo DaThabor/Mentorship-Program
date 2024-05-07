@@ -28,19 +28,19 @@ python.exe -m pip install pandas
 
 Once a package is installed (in many tools the common packages are already pre-loaded), you need to import the package in your python script (or Notebook). Importing a package can be done in three ways:
 
-1. Import package as is
+Import package as is
 
 ```python
 import pandas
 ```
 
-2. Import package with an abbrevation*
+Import package with an abbrevation*
 
 ```python
 import pandas as pd
 ```
 
-3. Import a specific function from a package
+Import a specific function from a package
 
 ```python
 from pandas import read_csv
@@ -49,6 +49,7 @@ from pandas import read_csv
 *Giving the package an abbreviated name makes it easier to use the package in your code, as you don't need to write the whole name again and again. For the common packages the abbreviations are also known in the community, e.g.
 
 Common abbreviations used in the community are:
+
 - pandas as pd
 - numpy as np
 - plotly as plt
@@ -125,4 +126,3 @@ The output will then be:
 Here we also see that to get the second and third column we can specify a range of values ('1:3' in this example). This means that we want to see each column starting from index 1 ("Second") and before index 3 ("Third").
 
 The last part is important in Python to understand that referring to a range of values it's always from the starting index and before the next index.
-
