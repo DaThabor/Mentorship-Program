@@ -1,17 +1,7 @@
-# Activate virtual environment
-
+import os
 import subprocess
 import sys
 import venv
-import os
-
-def install_requirements():
-    try:
-        # Running pip install command for the requirements.txt file
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'])
-        print("All packages installed successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred while installing packages: {e}")
 
 def create_virtual_environment(env_name):
     """
@@ -24,22 +14,7 @@ def create_virtual_environment(env_name):
     venv.create(venv_path, with_pip=True)
     print("Virtual environment created successfully.")
     
-    # Path to the pip executable inside the virtual environment
-    if os.name == 'nt':
-        pip_executable = os.path.join(venv_path, 'Scripts', 'pip.exe')
-    else:
-        pip_executable = os.path.join(venv_path, 'bin', 'pip')
-
-    return pip_executable
-
-def install_requirements(pip_executable):
-    try:
-        # Running pip install command for the requirements.txt file
-        print(f"Installing packages using {pip_executable}...")
-        subprocess.check_call([pip_executable, 'install', '-r', 'requirements.txt'])
-        print("All packages installed successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred while installing packages: {e}")
+    return venv_path
 
 def add_to_gitignore(venv_name):
     gitignore_path = ".gitignore"
@@ -63,8 +38,38 @@ def add_to_gitignore(venv_name):
         else:
             print(f"{venv_name}/ is already in .gitignore.")
 
+def generate_shell_script(env_path, requirements_file="requirements.txt"):
+    """
+    Generate a shell script to activate the virtual environment and install packages.
+    """
+    script_content = f"""
+#!/bin/bash
+source {env_path}/bin/activate
+pip install -r {requirements_file}
+"""
+    script_path = "activate_and_install.sh"
+    with open(script_path, 'w') as script_file:
+        script_file.write(script_content)
+    
+    # Make the script executable
+    os.chmod(script_path, 0o775)
+    
+    print(f"Generated shell script {script_path}.")
+    return script_path
+
 if __name__ == "__main__":
-    env_name = "myenv"  # Change the environment name if needed
-    pip_executable = create_virtual_environment(env_name)
-    install_requirements(pip_executable)
+    env_name = "myenv"  # Change this to your virtual environment's name
+
+    # Step 1: Create the virtual environment
+    venv_path = create_virtual_environment(env_name)
+    
+    # Step 2: Add the virtual environment to .gitignore
     add_to_gitignore(env_name)
+    
+    # Step 3: Generate the shell script
+    script_path = generate_shell_script(venv_path)
+    
+    # Step 4: Run the shell script
+    print(f"Running shell script {script_path}...")
+    subprocess.run(['bash', script_path], check=True)
+    print("Virtual environment activated and packages installed.")
